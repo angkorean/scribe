@@ -80,8 +80,8 @@ class Writer
                 file_put_contents($collectionPath, $collection);
             } else {
                 $outputPath = $this->paths->outputPath('collection.json');
-                Storage::disk('local')->put($outputPath, $collection);
-                $collectionPath = Storage::disk('local')->path($outputPath);
+                Storage::disk(config('scribe.laravel.disk'))->put($outputPath, $collection);
+                $collectionPath = Storage::disk(config('scribe.laravel.disk'))->path($outputPath);
             }
 
             c::success("Wrote Postman collection to: {$this->makePathFriendly($collectionPath)}");
@@ -101,8 +101,8 @@ class Writer
                 file_put_contents($specPath, $spec);
             } else {
                 $outputPath = $this->paths->outputPath('openapi.yaml');
-                Storage::disk('local')->put($outputPath, $spec);
-                $specPath = Storage::disk('local')->path($outputPath);
+                Storage::disk(config('scribe.laravel.disk'))->put($outputPath, $spec);
+                $specPath = Storage::disk(config('scribe.laravel.disk'))->path($outputPath);
             }
 
             c::success("Wrote OpenAPI specification to: {$this->makePathFriendly($specPath)}");

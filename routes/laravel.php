@@ -12,10 +12,10 @@ Route::middleware($middleware)
         Route::view($prefix, 'scribe.index')->name('scribe');
 
         Route::get("$prefix.postman", function () {
-            return new JsonResponse(Storage::disk('local')->get('scribe/collection.json'), json: true);
+            return new JsonResponse(Storage::disk(config('scribe.laravel.disk'))->get('scribe/collection.json'), json: true);
         })->name('scribe.postman');
 
         Route::get("$prefix.openapi", function () {
-            return response()->file(Storage::disk('local')->path('scribe/openapi.yaml'));
+            return response(Storage::disk(config('scribe.laravel.disk'))->get('scribe/openapi.yaml'));
         })->name('scribe.openapi');
     });

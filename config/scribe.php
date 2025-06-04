@@ -71,6 +71,7 @@ return [
 
         // Middleware to attach to the docs endpoint (if `add_routes` is true).
         'middleware' => [],
+        'disk' => env('SCRIBE_LARAVEL_DISK', 'local'), // The disk to use for storing the generated files. Default is 'local'.
     ],
 
     'external' => [
