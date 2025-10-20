@@ -334,13 +334,16 @@ class BaseGenerator extends OpenApiGenerator
             ];
         }
 
+        $response = $endpoint->responses->where('content', $responseContent)->first();
+        $contentType = $response->headers['content-type'] ?? $response->headers['Content-Type'] ?? 'application/json';
+
         switch ($type = gettype($decoded)) {
             case 'string':
             case 'boolean':
             case 'integer':
             case 'double':
                 return [
-                    'application/json' => [
+                    $contentType => [
                         'schema' => [
                             'type' => $type === 'double' ? 'number' : $type,
                             'example' => $decoded,
@@ -352,7 +355,7 @@ class BaseGenerator extends OpenApiGenerator
                 if (!count($decoded)) {
                     // empty array
                     return [
-                        'application/json' => [
+                        $contentType => [
                             'schema' => [
                                 'type' => 'array',
                                 'items' => [
@@ -386,7 +389,7 @@ class BaseGenerator extends OpenApiGenerator
                 }
 
                 return [
-                    'application/json' => [
+                    $contentType => [
                         'schema' => [
                             'type' => 'array',
                             'items' => [
@@ -404,7 +407,7 @@ class BaseGenerator extends OpenApiGenerator
                 $required = $this->filterRequiredResponseFields($endpoint, array_keys($properties));
 
                 $data = [
-                    'application/json' => [
+                    $contentType => [
                         'schema' => [
                             'type' => 'object',
                             'example' => $decoded,
@@ -413,7 +416,7 @@ class BaseGenerator extends OpenApiGenerator
                     ],
                 ];
                 if ($required) {
-                    $data['application/json']['schema']['required'] = $required;
+                    $data[$contentType]['schema']['required'] = $required;
                 }
 
                 return $data;
