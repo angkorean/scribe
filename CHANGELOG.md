@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
+## 5.5.0 (25 October 2025)
+### Modified
+- Change shalvah/clara constraint
+
 ## 5.4.0 (21 October 2025)
 ### Fixed
 - fix: arrays of objects support in OpenAPI response generation ([1021](https://github.com/knuckleswtf/scribe/pull/1021))
