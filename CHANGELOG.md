@@ -16,6 +16,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Modified
 - Change shalvah/clara constraint
 
+### Fixed
+- fix: handle rare edge case in base OpenApi spec generator after parallel merge ([#1031](https://github.com/knuckleswtf/scribe/pull/1031))
+
 ## 5.4.0 (21 October 2025)
 ### Fixed
 - fix: arrays of objects support in OpenAPI response generation ([1021](https://github.com/knuckleswtf/scribe/pull/1021))
