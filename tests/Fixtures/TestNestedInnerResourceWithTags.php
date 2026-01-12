@@ -2,7 +2,6 @@
 
 namespace Knuckles\Scribe\Tests\Fixtures;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TestNestedInnerResourceWithTags extends JsonResource
@@ -10,8 +9,7 @@ class TestNestedInnerResourceWithTags extends JsonResource
     /**
      * Create a new resource instance.
      *
-     * @param  mixed  $resource
-     * @return void
+     * @param mixed $resource
      */
     public function __construct($resource = [])
     {
@@ -20,6 +18,8 @@ class TestNestedInnerResourceWithTags extends JsonResource
 
     /**
      * Transform the resource into an array.
+     *
+     * @param mixed $request
      *
      * @return array<string, mixed>
      */

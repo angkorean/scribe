@@ -8,7 +8,6 @@ use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 use Knuckles\Scribe\Extracting\Shared\ResponseFieldTools;
 use Knuckles\Scribe\Extracting\Strategies\PhpAttributeStrategy;
 use Knuckles\Scribe\Tools\Utils as u;
-use ReflectionAttribute;
 
 /**
  * @extends PhpAttributeStrategy<ResponseField>
@@ -25,7 +24,7 @@ class GetFromResponseFieldAttribute extends PhpAttributeStrategy
     ): ?array {
         return [
             ...$this->getNonApiResourceFields($endpointData, $attributesOnMethod, $attributesOnFormRequest, $attributesOnController),
-            ...$this->getApiResourceFields($endpointData)
+            ...$this->getApiResourceFields($endpointData),
         ];
     }
 
@@ -34,27 +33,29 @@ class GetFromResponseFieldAttribute extends PhpAttributeStrategy
         $apiResourceAttributes = $endpointData->method->getAttributes(ResponseFromApiResource::class);
 
         return collect($apiResourceAttributes)
-            ->flatMap(fn(ReflectionAttribute $attribute) => $this->extractFieldsFromApiResource($attribute, $endpointData))
-            ->toArray();
+            ->flatMap(fn (\ReflectionAttribute $attribute) => $this->extractFieldsFromApiResource($attribute, $endpointData))
+            ->toArray()
+        ;
     }
 
-    protected function extractFieldsFromApiResource(ReflectionAttribute $attribute, ExtractedEndpointData $endpointData): array
+    protected function extractFieldsFromApiResource(\ReflectionAttribute $attribute, ExtractedEndpointData $endpointData): array
     {
         $className = $attribute->newInstance()->name;
         $method = u::getReflectedRouteMethod([$className, 'toArray']);
         $wrapKey = $className::$wrap ?? null;
 
         return collect($method->getAttributes(ResponseField::class))
-            ->mapWithKeys(function (ReflectionAttribute $attr) use ($endpointData, $wrapKey) {
+            ->mapWithKeys(function (\ReflectionAttribute $attr) use ($endpointData, $wrapKey) {
                 $data = $attr->newInstance()->toArray();
                 $data['type'] = ResponseFieldTools::inferTypeOfResponseField($data, $endpointData);
 
-                if ($wrapKey !== null) {
-                    $data['name'] = $wrapKey . '.' . $data['name'];
+                if (null !== $wrapKey) {
+                    $data['name'] = $wrapKey.'.'.$data['name'];
                 }
 
                 return [$data['name'] => $data];
-            })->toArray();
+            })->toArray()
+        ;
     }
 
     protected function getNonApiResourceFields(
@@ -71,6 +72,7 @@ class GetFromResponseFieldAttribute extends PhpAttributeStrategy
                 $data['type'] = ResponseFieldTools::inferTypeOfResponseField($data, $endpointData);
 
                 return [$data['name'] => $data];
-            })->toArray();
+            })->toArray()
+        ;
     }
 }

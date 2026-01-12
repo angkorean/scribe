@@ -38,11 +38,12 @@
         "nikic/fast-route": "^1.3",
         "orchestra/testbench": "^7.0|^8.0|^v9.10.0|^10.0",
         "pestphp/pest": "^1.21|^2.0|^3.0",
+        "php-cs-fixer/shim": "^3.92",
         "phpstan/phpstan": "^2.1.5",
         "phpunit/phpunit": "^9.0|^10.0|^11.0",
+        "spatie/ray": "^1.41",
         "symfony/css-selector": "^6.0|^7.0",
-        "symfony/dom-crawler": "^6.0|^7.0",
-        "spatie/ray": "^1.41"
+        "symfony/dom-crawler": "^6.0|^7.0"
     },
     "autoload": {
         "psr-4": {

@@ -6,12 +6,30 @@ use Knuckles\Scribe\Extracting\Shared\ResponseFieldTools;
 use Knuckles\Scribe\Extracting\Strategies\GetFieldsFromTagStrategy;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseApiResourceTags;
 use Knuckles\Scribe\Tools\AnnotationParser as a;
-use Mpociot\Reflection\DocBlock;
 use Knuckles\Scribe\Tools\Utils as u;
+use Mpociot\Reflection\DocBlock;
 
 class GetFromResponseFieldTag extends GetFieldsFromTagStrategy
 {
     protected string $tagName = 'responseField';
+
+    /**
+     * Get responseField tags from the controller method or the API resource class.
+     */
+    public function getFromTags(array $tagsOnMethod, array $tagsOnClass = []): array
+    {
+        $nonApiResourceFields = parent::getFromTags($tagsOnMethod, $tagsOnClass);
+        $apiResourceFields = $this->getApiResourceFields($tagsOnMethod);
+
+        return [...$nonApiResourceFields, ...$apiResourceFields];
+    }
+
+    public function getClassNameFromApiResourceTag(string $apiResourceTag): string
+    {
+        ['content' => $className] = a::parseIntoContentAndFields($apiResourceTag, UseApiResourceTags::apiResourceAllowedFields());
+
+        return $className;
+    }
 
     protected function parseTag(string $tagContent): array
     {
@@ -28,11 +46,11 @@ class GetFromResponseFieldTag extends GetFieldsFromTagStrategy
             $required = false;
         } else {
             [$_, $name, $type, $required, $description] = $content;
-            if($required !== "required"){
-                $description = $required . " " . $description;
+            if ('required' !== $required) {
+                $description = $required.' '.$description;
             }
 
-            $required = $required === "required";
+            $required = 'required' === $required;
             $description = trim($description);
         }
 
@@ -43,24 +61,13 @@ class GetFromResponseFieldTag extends GetFieldsFromTagStrategy
         // The type can also be a union or nullable type (eg ?string or string|null)
         if (!$this->isSupportedTypeInDocBlocks(explode('|', trim($type, '?'))[0])) {
             // Then that wasn't a type, but part of the description
-            $data['description'] = trim("$type $description");
+            $data['description'] = trim("{$type} {$description}");
             $data['type'] = '';
 
             $data['type'] = ResponseFieldTools::inferTypeOfResponseField($data, $this->endpointData);
         }
 
         return $data;
-    }
-
-    /**
-     * Get responseField tags from the controller method or the API resource class.
-     */
-    public function getFromTags(array $tagsOnMethod, array $tagsOnClass = []): array
-    {
-        $nonApiResourceFields = parent::getFromTags($tagsOnMethod, $tagsOnClass);
-        $apiResourceFields = $this->getApiResourceFields($tagsOnMethod);
-
-        return [...$nonApiResourceFields, ...$apiResourceFields];
     }
 
     protected function getApiResourceFields(array $tagsOnMethod): array
@@ -103,22 +110,16 @@ class GetFromResponseFieldTag extends GetFieldsFromTagStrategy
 
     protected function applyWrapKeyPrefix(array $fields, ?string $wrapKey): array
     {
-        if ($wrapKey === null) {
+        if (null === $wrapKey) {
             return $fields;
         }
 
         $wrappedFields = [];
         foreach ($fields as $fieldName => $fieldData) {
-            $fieldData['name'] = $wrapKey . '.' . $fieldData['name'];
+            $fieldData['name'] = $wrapKey.'.'.$fieldData['name'];
             $wrappedFields[$fieldData['name']] = $fieldData;
         }
 
         return $wrappedFields;
-    }
-
-    public function getClassNameFromApiResourceTag(string $apiResourceTag): string
-    {
-        ['content' => $className] = a::parseIntoContentAndFields($apiResourceTag, UseApiResourceTags::apiResourceAllowedFields());
-        return $className;
     }
 }

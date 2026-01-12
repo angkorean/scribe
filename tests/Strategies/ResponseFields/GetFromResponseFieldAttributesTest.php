@@ -2,7 +2,7 @@
 
 namespace Knuckles\Scribe\Tests\Strategies\ResponseFields;
 
-use Closure;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Knuckles\Camel\Extraction\ExtractedEndpointData;
 use Knuckles\Camel\Extraction\ResponseCollection;
 use Knuckles\Scribe\Attributes\ResponseField;
@@ -13,18 +13,21 @@ use Knuckles\Scribe\Tests\Fixtures\TestPet;
 use Knuckles\Scribe\Tests\Fixtures\TestPetApiResource;
 use Knuckles\Scribe\Tools\DocumentationConfig;
 use PHPUnit\Framework\TestCase;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
-use ReflectionClass;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class GetFromResponseFieldAttributesTest extends TestCase
 {
     use ArraySubsetAsserts;
 
     /** @test */
-    public function can_fetch_from_responsefield_attribute()
+    public function canFetchFromResponsefieldAttribute()
     {
         $endpoint = $this->endpoint(function (ExtractedEndpointData $e) {
-            $e->controller = new ReflectionClass(ResponseFieldAttributeTestController::class);
+            $e->controller = new \ReflectionClass(ResponseFieldAttributeTestController::class);
             $e->method = $e->controller->getMethod('methodWithAttributes');
             $e->responses = new ResponseCollection([
                 [
@@ -59,15 +62,15 @@ class GetFromResponseFieldAttributesTest extends TestCase
             ],
             'not_required_attribute' => [
                 'required' => false,
-            ]
+            ],
         ], $results);
     }
 
     /** @test */
-    public function can_read_from_toArray_on_API_resources()
+    public function canReadFromToArrayOnAPIResources()
     {
         $endpoint = $this->endpoint(function (ExtractedEndpointData $e) {
-            $e->controller = new ReflectionClass(ResponseFieldAttributeTestController::class);
+            $e->controller = new \ReflectionClass(ResponseFieldAttributeTestController::class);
             $e->method = $e->controller->getMethod('methodWithApiResourceResponse');
             $e->responses = new ResponseCollection([]);
         });
@@ -86,10 +89,10 @@ class GetFromResponseFieldAttributesTest extends TestCase
     }
 
     /** @test */
-    public function attributes_from_nested_api_resources_are_correctly_merged()
+    public function attributesFromNestedApiResourcesAreCorrectlyMerged()
     {
         $endpoint = $this->endpoint(function (ExtractedEndpointData $e) {
-            $e->controller = new ReflectionClass(ResponseFieldAttributeTestController::class);
+            $e->controller = new \ReflectionClass(ResponseFieldAttributeTestController::class);
             $e->method = $e->controller->getMethod('methodWithNestedApiResourceResponse');
             $e->responses = new ResponseCollection([]);
         });
@@ -109,17 +112,17 @@ class GetFromResponseFieldAttributesTest extends TestCase
     protected function fetch($endpoint): array
     {
         $strategy = new GetFromResponseFieldAttribute(new DocumentationConfig([]));
+
         return $strategy($endpoint);
     }
 
-    protected function endpoint(Closure $configure): ExtractedEndpointData
+    protected function endpoint(\Closure $configure): ExtractedEndpointData
     {
         $endpoint = new class extends ExtractedEndpointData {
-            public function __construct(array $parameters = [])
-            {
-            }
+            public function __construct(array $parameters = []) {}
         };
         $configure($endpoint);
+
         return $endpoint;
     }
 }
@@ -130,18 +133,11 @@ class ResponseFieldAttributeTestController
     #[ResponseField('other', 'string')]
     #[ResponseField('required_attribute', required: true)]
     #[ResponseField('not_required_attribute', required: false)]
-    public function methodWithAttributes()
-    {
-    }
+    public function methodWithAttributes() {}
 
     #[ResponseFromApiResource(TestPetApiResource::class, TestPet::class)]
-    public function methodWithApiResourceResponse()
-    {
-    }
-
+    public function methodWithApiResourceResponse() {}
 
     #[ResponseFromApiResource(TestNestedOuterResource::class)]
-    public function methodWithNestedApiResourceResponse()
-    {
-    }
+    public function methodWithNestedApiResourceResponse() {}
 }

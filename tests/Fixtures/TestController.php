@@ -5,6 +5,7 @@ namespace Knuckles\Scribe\Tests\Fixtures;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
+use Knuckles\Scribe\Attributes\ResponseFromApiResource;
 use Knuckles\Scribe\Tools\Utils;
 use Symfony\Component\HttpFoundation\StreamedJsonResponse;
 
@@ -101,6 +102,7 @@ class TestController extends Controller
     public function withFormDataParams()
     {
         request()->validate(['image' => 'file|required']);
+
         return [
             'filename' => request()->file('image')->getFilename(),
             'filepath' => request()->file('image')->getPath(),
@@ -162,6 +164,7 @@ class TestController extends Controller
     /**
      * @bodyParam included string required Exists in examples. Example: 'Here'
      * @bodyParam  excluded_body_param int Does not exist in examples. No-example
+     *
      * @queryParam excluded_query_param Does not exist in examples. No-example
      */
     public function withExcludedExamples()
@@ -171,6 +174,7 @@ class TestController extends Controller
 
     /**
      * @authenticated
+     *
      * @responseField user_id string The ID of the newly created user
      * @responseField creator_id string The ID of the creator
      */
@@ -190,6 +194,7 @@ class TestController extends Controller
 
     /**
      * @apiResource \Knuckles\Scribe\Tests\Fixtures\TestUserApiResource
+     *
      * @apiResourceModel \Knuckles\Scribe\Tests\Fixtures\TestUser
      */
     public function withEloquentApiResource()
@@ -205,7 +210,7 @@ class TestController extends Controller
         return new TestEmptyApiResource();
     }
 
-    #[\Knuckles\Scribe\Attributes\ResponseFromApiResource(\Knuckles\Scribe\Tests\Fixtures\TestNestedOuterResource::class)]
+    #[ResponseFromApiResource(TestNestedOuterResource::class)]
     public function withNestedApiResourceResponse()
     {
         return new TestNestedOuterResource();
@@ -223,6 +228,7 @@ class TestController extends Controller
      * @group Other😎
      *
      * @apiResourceCollection Knuckles\Scribe\Tests\Fixtures\TestUserApiResource
+     *
      * @apiResourceModel Knuckles\Scribe\Tests\Fixtures\TestUser
      */
     public function withEloquentApiResourceCollection()
@@ -236,6 +242,7 @@ class TestController extends Controller
      * @group Other😎
      *
      * @apiResourceCollection Knuckles\Scribe\Tests\Fixtures\TestUserApiResourceCollection
+     *
      * @apiResourceModel Knuckles\Scribe\Tests\Fixtures\TestUser
      */
     public function withEloquentApiResourceCollectionClass()
@@ -263,7 +270,7 @@ class TestController extends Controller
             'id' => (int) $fruit->id,
             'name' => trim($fruit->name),
             'color' => strtolower($fruit->color),
-            'weight' => $fruit->weight . ' kg',
+            'weight' => $fruit->weight.' kg',
             'delicious' => $fruit->delicious,
             'responseCall' => true,
         ];
@@ -271,10 +278,13 @@ class TestController extends Controller
 
     public function withStreamedResponse()
     {
-        function yieldItems() {
+        function yieldItems()
+        {
             yield 'one';
+
             yield 'two';
         }
+
         // Laravel v11 added the shortcut response()->streamJson(...)
         return new StreamedJsonResponse([
             'items' => yieldItems(),
@@ -296,6 +306,11 @@ class TestController extends Controller
      * @urlParam param4 No-example.
      *
      * @queryParam something
+     *
+     * @param mixed      $param
+     * @param mixed      $param2
+     * @param null|mixed $param3
+     * @param null|mixed $param4
      */
     public function echoesUrlParameters($param, $param2, $param3 = null, $param4 = null)
     {
@@ -304,7 +319,10 @@ class TestController extends Controller
 
     /**
      * @authenticated
+     *
      * @urlparam id Example: 3
+     *
+     * @param mixed $id
      */
     public function echoesRequestValues($id)
     {
@@ -330,9 +348,7 @@ class TestController extends Controller
     /**
      * @hideFromAPIDocumentation
      */
-    public function skip()
-    {
-    }
+    public function skip() {}
 
     /**
      * @response {
@@ -395,6 +411,7 @@ class TestController extends Controller
 
     /**
      * @transformer \Knuckles\Scribe\Tests\Fixtures\TestTransformer
+     *
      * @transformermodel \Knuckles\Scribe\Tests\Fixtures\TestModel
      */
     public function transformerTagWithModel()
@@ -412,6 +429,7 @@ class TestController extends Controller
 
     /**
      * @transformercollection \Knuckles\Scribe\Tests\Fixtures\TestTransformer
+     *
      * @transformermodel \Knuckles\Scribe\Tests\Fixtures\TestModel
      */
     public function transformerCollectionTagWithModel()
@@ -657,9 +675,9 @@ class TestController extends Controller
 
         // Do stuff
         if ($validator->fails()) {
-
         }
     }
+
     public function withInlineValidatorMakeValidate(Request $request)
     {
         // Some stuff
@@ -747,7 +765,7 @@ class TestController extends Controller
     public function withEnumRule(Request $request)
     {
         $request->validate([
-            'enum_class' => ['required', new Rules\Enum(\Knuckles\Scribe\Tests\Fixtures\TestStringBackedEnum::class), 'nullable'],
+            'enum_class' => ['required', new Rules\Enum(TestStringBackedEnum::class), 'nullable'],
             'enum_string' => ['required', Rule::enum('\Knuckles\Scribe\Tests\Fixtures\TestIntegerBackedEnum'), 'nullable'],
             // Not full path class call won't work
             'enum_nonexistent' => ['required', new Rules\Enum(TestStringBackedEnum::class)],
