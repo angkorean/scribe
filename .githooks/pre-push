@@ -6,19 +6,19 @@ set -euo pipefail
 
 # Prefer directly executable vendor binary
 if [ -x "./vendor/bin/php-cs-fixer" ]; then
-  ./vendor/bin/php-cs-fixer fix "$@"
+  ./vendor/bin/php-cs-fixer fix
   exit $?
 fi
 
 # If it's a PHP wrapper script, run with php
 if [ -f "./vendor/bin/php-cs-fixer" ]; then
-  php "./vendor/bin/php-cs-fixer" fix "$@"
+  php "./vendor/bin/php-cs-fixer" fix
   exit $?
 fi
 
 # If a Windows batch exists under vendor/bin
 if [ -x "./vendor/bin/php-cs-fixer.bat" ]; then
-  ./vendor/bin/php-cs-fixer.bat fix "$@"
+  ./vendor/bin/php-cs-fixer.bat fix
   exit $?
 fi
 
