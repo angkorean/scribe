@@ -683,9 +683,31 @@ trait ParsesValidationRules
 
                     // Other rules.
                 case 'in':
-                    $parameterData['enumValues'] = $ruleArguments;
-                    $parameterData['setter'] = function () use ($ruleArguments) {
-                        return Arr::random($ruleArguments);
+                    // Cast numeric values in enumValues, but don't change the parameter type
+                    // The type should remain as set by other rules (eg 'string' rule) or default 'string'
+                    $castedValues = $ruleArguments;
+                    $allNumeric = count($ruleArguments) > 0 && array_reduce(
+                        $ruleArguments,
+                        fn($carry, $val) => $carry && is_numeric($val),
+                        true
+                    );
+
+                    if ($allNumeric) {
+                        // Check if all are integers (no decimal points)
+                        $allIntegers = array_reduce(
+                            $ruleArguments,
+                            fn($carry, $val) => $carry && !Str::contains($val, '.'),
+                            true
+                        );
+
+                        $castedValues = $allIntegers
+                            ? array_map(fn($v) => (int) $v, $ruleArguments)
+                            : array_map(fn($v) => (float) $v, $ruleArguments);
+                    }
+
+                    $parameterData['enumValues'] = $castedValues;
+                    $parameterData['setter'] = function () use ($castedValues) {
+                        return Arr::random($castedValues);
                     };
 
                     break;

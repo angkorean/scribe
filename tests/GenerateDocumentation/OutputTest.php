@@ -66,8 +66,8 @@ class OutputTest extends BaseLaravelTest
         $this->setConfig(['openapi.enabled' => true]);
 
         $this->generateAndExpectConsoleOutput(expected: [
-            'Wrote HTML docs and assets to: public/docs/',
-            'Wrote Postman collection to: public/docs/collection.json',
+            'Writing HTML docs to public/docs/ and assets to public/docs/',
+            'Generating Postman collection in public/docs/',
         ]);
 
         $this->assertFileExists($this->postmanOutputPath(true));
@@ -141,9 +141,8 @@ class OutputTest extends BaseLaravelTest
         $this->enableResponseCalls();
 
         $this->generateAndExpectConsoleOutput(expected: [
-            'Wrote Blade docs to: vendor/orchestra/testbench-core/laravel/resources/views/scribe',
-            'Wrote Laravel assets to: vendor/orchestra/testbench-core/laravel/public/vendor/scribe',
-            'Wrote Postman collection to: vendor/orchestra/testbench-core/laravel/storage/app/scribe/collection.json',
+            'Writing Blade docs to vendor/orchestra/testbench-core/laravel/resources/views/scribe/ and assets to vendor/orchestra/testbench-core/laravel/public/vendor/scribe/',
+            'Generating Postman collection in vendor/orchestra/testbench-core/laravel/storage/app/scribe/',
         ]);
 
         $generatedCollection = json_decode(file_get_contents($this->postmanOutputPath()), true);
@@ -196,9 +195,8 @@ class OutputTest extends BaseLaravelTest
         $this->enableResponseCalls();
 
         $this->generateAndExpectConsoleOutput(expected: [
-            'Wrote Blade docs to: vendor/orchestra/testbench-core/laravel/resources/views/scribe',
-            'Wrote Laravel assets to: vendor/orchestra/testbench-core/laravel/public/vendor/scribe',
-            'Wrote OpenAPI specification to: vendor/orchestra/testbench-core/laravel/storage/app/scribe/openapi.yaml',
+            'Writing Blade docs to vendor/orchestra/testbench-core/laravel/resources/views/scribe/ and assets to vendor/orchestra/testbench-core/laravel/public/vendor/scribe/',
+            'Generating OpenAPI specification in vendor/orchestra/testbench-core/laravel/storage/app/scribe/',
         ]);
 
         $generatedSpec = Yaml::parseFile($this->openapiOutputPath());
@@ -235,9 +233,8 @@ class OutputTest extends BaseLaravelTest
         $this->enableResponseCalls();
 
         $this->generateAndExpectConsoleOutput(expected: [
-            'Wrote Blade docs to: vendor/orchestra/testbench-core/laravel/resources/views/scribe',
-            'Wrote Laravel assets to: vendor/orchestra/testbench-core/laravel/public/vendor/scribe',
-            'Wrote OpenAPI specification to: vendor/orchestra/testbench-core/laravel/storage/app/scribe/openapi.yaml',
+            'Writing Blade docs to vendor/orchestra/testbench-core/laravel/resources/views/scribe/ and assets to vendor/orchestra/testbench-core/laravel/public/vendor/scribe/',
+            'Generating OpenAPI specification in vendor/orchestra/testbench-core/laravel/storage/app/scribe/',
         ]);
 
         $generatedSpec = Yaml::parseFile($this->openapiOutputPath());
@@ -717,10 +714,8 @@ class OutputTest extends BaseLaravelTest
             $pathOptions['--scribe-dir'] = $intermediateOutputDirectory;
         }
         $this->generateAndExpectConsoleOutput($pathOptions, [
-            "Wrote Blade docs to: vendor/orchestra/testbench-core/laravel/resources/views/{$configName}",
-            "Wrote Laravel assets to: vendor/orchestra/testbench-core/laravel/public/vendor/{$configName}",
-            "Wrote Postman collection to: vendor/orchestra/testbench-core/laravel/storage/app/{$configName}/collection.json",
-            "Wrote OpenAPI specification to: vendor/orchestra/testbench-core/laravel/storage/app/{$configName}/openapi.yaml",
+            "Writing Blade docs to vendor/orchestra/testbench-core/laravel/resources/views/{$configName}/ and assets to vendor/orchestra/testbench-core/laravel/public/vendor/{$configName}/",
+            "Generating Postman collection in vendor/orchestra/testbench-core/laravel/storage/app/{$configName}/",
         ]);
 
         $paths = collect([

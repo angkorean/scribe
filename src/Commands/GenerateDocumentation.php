@@ -3,6 +3,7 @@
 namespace Knuckles\Scribe\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Console\View\Components\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
@@ -89,12 +90,23 @@ class GenerateDocumentation extends Command
         return $this->docConfig;
     }
 
+    /**
+     * Get access to output components for task-based output.
+     *
+     * @return Factory
+     */
+    public function outputComponents()
+    {
+        return $this->components;
+    }
+
     public function bootstrap(): void
     {
         // The --verbose option is included with all Artisan commands.
         Globals::$shouldBeVerbose = $this->option('verbose');
 
         c::bootstrapOutput($this->output);
+        c::setCommand($this);
 
         $configName = $this->option('config');
         if (!config($configName)) {
@@ -216,21 +228,27 @@ class GenerateDocumentation extends Command
 
     protected function sayGoodbye(bool $errored = false): void
     {
-        $message = 'All done. ';
+        $message = 'All done.';
+        $url = null;
+
         if ($this->docConfig->outputRoutedThroughLaravel()) {
             if ($this->docConfig->get('laravel.add_routes')) {
-                $message .= 'Visit your docs at ' . url($this->docConfig->get('laravel.docs_url'));
+                $url = url($this->docConfig->get('laravel.docs_url'));
             }
         } elseif (Str::endsWith(base_path('public'), 'public') && Str::startsWith($this->docConfig->get('static.output_path'), 'public/')) {
-            $message = 'Visit your docs at ' . url(str_replace('public/', '', $this->docConfig->get('static.output_path')));
+            $url = url(str_replace('public/', '', $this->docConfig->get('static.output_path')));
         }
 
         $this->newLine();
-        c::success($message);
+        if ($url) {
+            $this->components->twoColumnDetail($message, $url);
+        } else {
+            $this->components->info($message);
+        }
 
         if ($errored) {
-            c::warn('Generated docs, but encountered some errors while processing routes.');
-            c::warn('Check the output above for details.');
+            $this->components->warn('Generated docs, but encountered some errors while processing routes.');
+            $this->components->warn('Check the output above for details.');
             if (empty($_SERVER['SCRIBE_TESTS'])) {
                 exit(2);
             }
