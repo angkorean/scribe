@@ -38,6 +38,7 @@ class Base31Generator extends BaseGenerator
     {
         $fieldData = parent::generateFieldData($field);
         $this->convertExampleInSchemaToExamples($fieldData);
+
         return $fieldData;
     }
 
@@ -48,6 +49,7 @@ class Base31Generator extends BaseGenerator
     {
         $schema = parent::generateSchemaForResponseValue($value, $endpoint, $path);
         $this->convertExampleInSchemaToExamples($schema);
+
         return $schema;
     }
 
@@ -77,7 +79,7 @@ class Base31Generator extends BaseGenerator
         // Only convert if 'example' exists and 'examples' doesn't already exist
         // If both exist, prioritize 'examples' and remove 'example' to avoid conflicts
         if (array_key_exists('example', $schema)) {
-            if (!array_key_exists('examples', $schema)) {
+            if (! array_key_exists('examples', $schema)) {
                 $schema['examples'] = [$schema['example']];
             }
             // Remove 'example' to ensure only 'examples' is present in OpenAPI 3.1
@@ -96,12 +98,13 @@ class Base31Generator extends BaseGenerator
             $this->convertExampleInSchemaToExamples($schema['items']);
         }
     }
+
     protected function convertExampleOutsideSchemaToExamples(array &$data): void
     {
         // Only convert if 'example' exists and 'examples' doesn't already exist
         // If both exist, prioritize 'examples' and remove 'example' to avoid conflicts
         if (isset($data['example'])) {
-            if (!isset($data['schema']['examples'])) {
+            if (! isset($data['schema']['examples'])) {
                 $data['schema']['examples'] = [$data['example']];
             }
             // Remove 'example' to ensure only 'examples' is present in OpenAPI 3.1
@@ -125,6 +128,7 @@ class Base31Generator extends BaseGenerator
     {
         $data = parent::headerToOpenApiParameterObject($name, $value);
         $this->convertExampleOutsideSchemaToExamples($data);
+
         return $data;
     }
 
@@ -132,6 +136,7 @@ class Base31Generator extends BaseGenerator
     {
         $data = parent::queryParamToOpenApiParameterObject($name, $details);
         $this->convertExampleOutsideSchemaToExamples($data);
+
         return $data;
     }
 
@@ -144,6 +149,7 @@ class Base31Generator extends BaseGenerator
         }
 
         $this->convertExampleOutsideSchemaToExamples($data);
+
         return $data;
     }
 }

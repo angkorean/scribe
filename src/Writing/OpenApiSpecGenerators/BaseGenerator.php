@@ -616,6 +616,7 @@ class BaseGenerator extends OpenApiGenerator
                 $parameters[] = $parameterData;
             }
         }
+
         return $parameters;
     }
 
@@ -623,7 +624,7 @@ class BaseGenerator extends OpenApiGenerator
     {
         if (count($endpoint->headers)) {
             foreach ($endpoint->headers as $name => $value) {
-                if (in_array(strtolower($name), ['content-type', 'accept', 'authorization'])) {
+                if (in_array(mb_strtolower($name), ['content-type', 'accept', 'authorization'])) {
                     // These headers are not allowed in the spec.
                     // https://swagger.io/docs/specification/describing-parameters/#header-parameters
                     continue;
@@ -632,6 +633,7 @@ class BaseGenerator extends OpenApiGenerator
                 $parameters[] = $this->headerToOpenApiParameterObject($name, $value);
             }
         }
+
         return $parameters;
     }
 
@@ -661,6 +663,7 @@ class BaseGenerator extends OpenApiGenerator
         if ($details->deprecated) {
             $parameterData['deprecated'] = true;
         }
+
         return $parameterData;
     }
 
@@ -679,7 +682,7 @@ class BaseGenerator extends OpenApiGenerator
         ];
         // Workaround for optional parameters
         if (empty($details->required)) {
-            $parameterData['description'] = rtrim('Optional parameter. ' . $parameterData['description']);
+            $parameterData['description'] = rtrim('Optional parameter. '.$parameterData['description']);
             $parameterData['examples'] = [
                 'omitted' => [
                     'summary' => 'When the value is omitted',
