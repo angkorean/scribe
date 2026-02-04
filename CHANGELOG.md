@@ -12,6 +12,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
+## 5.7.0 (04 February 2026)
+### Added
+- Feature: laravel console output ([#1047](https://github.com/knuckleswtf/scribe/pull/1047))
+- Add AGENTS.md for AI coding assistants ([#1055](https://github.com/knuckleswtf/scribe/pull/1055))
+- Add OpenAPI 3.1 schema example to examples conversion ([#1042](https://github.com/knuckleswtf/scribe/pull/1042))
+
+### Modified
+- Replace erusev/parsedown with parsedown/parsedown for PHP 8.4 compatibility ([#1049](https://github.com/knuckleswtf/scribe/pull/1049))
+- Use pint for code style ([#1054](https://github.com/knuckleswtf/scribe/pull/1054))
+
+### Fixed
+- Fix HTML special characters breaking Try It Out panel JSON display ([#1048](https://github.com/knuckleswtf/scribe/pull/1048))
+- Respect wrapping of API resources ([#1046](https://github.com/knuckleswtf/scribe/pull/1046))
+- Prevent empty enums when omitting ResponseField parameters ([#1044](https://github.com/knuckleswtf/scribe/pull/1044))
+- Openapi nullable response fields ([#1041](https://github.com/knuckleswtf/scribe/pull/1041))
+
 ## 5.6.0 (23 November 2025)
 - Add support for OpenAPI v3.1 specification ([#1040](https://github.com/knuckleswtf/scribe/pull/1040))
     - Added `openapi.version` configuration option to choose between OpenAPI 3.0.3 (default) and 3.1.0
