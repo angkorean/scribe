@@ -12,6 +12,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Removed
 
+## 5.8.0 (23 February 2026)
+### Added
+- Allow opt in suppressing of model events when generating response data with factories ([#1057](https://github.com/knuckleswtf/scribe/pull/1057))
+- Add agent skill for releasing (c56c096d)
+
+### Modified
+- Bump dependencies for Laravel 13 ([#1060](https://github.com/knuckleswtf/scribe/pull/1060))
+
+### Fixed
+- Fix undefined array key 'text' in MarkdownParser::blockHeader ([#1059](https://github.com/knuckleswtf/scribe/pull/1059))
+
 ## 5.7.0 (04 February 2026)
 ### Added
 - Feature: laravel console output ([#1047](https://github.com/knuckleswtf/scribe/pull/1047))
