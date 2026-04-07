@@ -175,7 +175,7 @@ class Writer
     protected function writePostmanCollection(array $groups): void
     {
         if ($this->config->get('postman.enabled', true)) {
-            $outputPath = $this->isStatic ? $this->staticTypeOutputPath : Storage::disk('local')->path($this->paths->outputPath());
+            $outputPath = $this->isStatic ? $this->staticTypeOutputPath : Storage::disk(config('scribe.laravel.disk'))->path($this->paths->outputPath());
             c::task(
                 'Generating Postman collection in '.mb_rtrim($this->makePathFriendly($outputPath), '/').'/',
                 function () use ($groups) {
@@ -185,8 +185,8 @@ class Writer
                         file_put_contents($collectionPath, $collection);
                     } else {
                         $outputPath = $this->paths->outputPath('collection.json');
-                        Storage::disk('local')->put($outputPath, $collection);
-                        $collectionPath = Storage::disk('local')->path($outputPath);
+                        Storage::disk(config('scribe.laravel.disk'))->put($outputPath, $collection);
+                        $collectionPath = Storage::disk(config('scribe.laravel.disk'))->path($outputPath);
                     }
 
                     $this->generatedFiles['postman'] = realpath($collectionPath);
@@ -200,7 +200,7 @@ class Writer
     protected function writeOpenAPISpec(array $parsedRoutes): void
     {
         if ($this->config->get('openapi.enabled', false) || $this->isExternal) {
-            $outputPath = $this->isStatic ? $this->staticTypeOutputPath : Storage::disk('local')->path($this->paths->outputPath());
+            $outputPath = $this->isStatic ? $this->staticTypeOutputPath : Storage::disk(config('scribe.laravel.disk'))->path($this->paths->outputPath());
             c::task(
                 'Generating OpenAPI specification in '.mb_rtrim($this->makePathFriendly($outputPath), '/').'/',
                 function () use ($parsedRoutes) {
@@ -211,8 +211,8 @@ class Writer
                         file_put_contents($specPath, $spec);
                     } else {
                         $outputPath = $this->paths->outputPath('openapi.yaml');
-                        Storage::disk('local')->put($outputPath, $spec);
-                        $specPath = Storage::disk('local')->path($outputPath);
+                        Storage::disk(config('scribe.laravel.disk'))->put($outputPath, $spec);
+                        $specPath = Storage::disk(config('scribe.laravel.disk'))->path($outputPath);
                     }
 
                     $this->generatedFiles['openapi'] = realpath($specPath);

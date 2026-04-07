@@ -670,13 +670,13 @@ class OutputTest extends BaseLaravelTest
     protected function postmanOutputPath(bool $staticType = false): string
     {
         return $staticType
-            ? 'public/docs/collection.json' : Storage::disk('local')->path('scribe/collection.json');
+            ? 'public/docs/collection.json' : Storage::disk(config('scribe.laravel.disk'))->path('scribe/collection.json');
     }
 
     protected function openapiOutputPath(bool $staticType = false): string
     {
         return $staticType
-            ? 'public/docs/openapi.yaml' : Storage::disk('local')->path('scribe/openapi.yaml');
+            ? 'public/docs/openapi.yaml' : Storage::disk(config('scribe.laravel.disk'))->path('scribe/openapi.yaml');
     }
 
     protected function htmlOutputPath(): string
@@ -719,8 +719,8 @@ class OutputTest extends BaseLaravelTest
         ]);
 
         $paths = collect([
-            Storage::disk('local')->path("{$configName}/collection.json"),
-            Storage::disk('local')->path("{$configName}/openapi.yaml"),
+            Storage::disk(config('scribe.laravel.disk'))->path("{$configName}/collection.json"),
+            Storage::disk(config('scribe.laravel.disk'))->path("{$configName}/openapi.yaml"),
             View::getFinder()->find("{$configName}/index"),
         ]);
         $paths->each(fn ($path) => $this->assertFileContainsString($path, $title));

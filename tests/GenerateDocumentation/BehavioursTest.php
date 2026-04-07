@@ -101,8 +101,8 @@ class BehavioursTest extends BaseLaravelTest
         $this->assertEquals([
             'html' => null,
             'blade' => resource_path("views{$ノ}scribe{$ノ}index.blade.php"),
-            'postman' => Storage::disk('local')->path("scribe{$ノ}collection.json"),
-            'openapi' => Storage::disk('local')->path("scribe{$ノ}openapi.yaml"),
+            'postman' => Storage::disk(config('scribe.laravel.disk'))->path("scribe{$ノ}collection.json"),
+            'openapi' => Storage::disk(config('scribe.laravel.disk'))->path("scribe{$ノ}openapi.yaml"),
             'assets' => [
                 'js' => public_path("vendor{$ノ}scribe{$ノ}js"),
                 'css' => public_path("vendor{$ノ}scribe{$ノ}css"),

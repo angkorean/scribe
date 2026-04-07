@@ -81,6 +81,9 @@ return [
 
         // Middleware to attach to the docs endpoint (if `add_routes` is true).
         'middleware' => [],
+
+        // Laravel Storage disk to use for writing and serving generated files.
+        'disk' => env('SCRIBE_LARAVEL_DISK', 'local'),
     ],
 
     'external' => [
